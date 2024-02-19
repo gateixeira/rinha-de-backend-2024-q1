@@ -8,9 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker-compose up -d
       - name: test
         run: |
           wget https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle/3.10.3/gatling-charts-highcharts-bundle-3.10.3-bundle.zip
           unzip gatling-charts-highcharts-bundle-3.10.3-bundle.zip
+          docker-compose -f participantes/gateixeira/docker-compose.yml up -d
+          sleep 20
           ./executar-teste-local.sh
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: gatling
+          path: load-test/user-files/results/*
